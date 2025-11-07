@@ -13,9 +13,6 @@ import { UIController } from './modules/ui/app.ui.controller';
       url: process.env.DATABASE_URL,
       entities: [User],
       synchronize: true,
-      ssl: {
-        rejectUnauthorized: false,
-      },
     }),
     AuthModule,
   ],
