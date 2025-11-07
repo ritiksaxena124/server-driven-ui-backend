@@ -1,98 +1,83 @@
-# Server-Driven UI: Backend
+# 🚀 Server-Driven UI Backend (NestJS)
 
-Backend ini dibangun menggunakan **NestJS**, sebuah framework Node.js yang berbasis TypeScript. Peran utama backend dalam sistem ini adalah menyediakan JSON yang berisi **struktur UI**, serta menangani **autentikasi** dan **manajemen pengguna**.
+This project implements the backend side of a **Server-Driven UI (SDUI)** architecture using **NestJS**. Its core function is to decouple the UI structure from the frontend codebase by serving dynamic UI components via JSON endpoints, alongside managing robust user **authentication** using JWT.
 
-## 🎯 Tujuan
-- **Menjadikan UI dapat dikendalikan dari server** tanpa perlu mengubah kode di frontend.
-- **Memisahkan logika bisnis dan UI**, sehingga perubahan tampilan tidak memengaruhi logika backend.
-- **Menyediakan API otentikasi** berbasis JWT untuk login/logout pengguna.
+## ✨ Key Features
 
-## 🛠️ Teknologi yang Digunakan
-- **NestJS** - Framework backend berbasis TypeScript.
-- **JWT (JSON Web Token)** - Untuk autentikasi pengguna.
-- **TypeORM** - Untuk koneksi ke database.
-- **SQLite / PostgreSQL** (supabase) - Penyimpanan data pengguna dan konfigurasi UI.
-
-## 📌 Alur Kerja Backend
-1. **Menyediakan JSON UI**
-   - Backend memiliki endpoint seperti `/ui/auth`, `/ui/home`, dan `/ui/dashboard` yang mengembalikan JSON yang akan digunakan frontend untuk merender tampilan.
-
-2. **Otentikasi & Manajemen Pengguna**
-   - Pengguna bisa **login & register** dengan JWT.
-   - Token JWT digunakan untuk mengakses halaman yang membutuhkan autentikasi (misalnya `/dashboard`).
-
-3. **Manajemen UI di Server**
-   - Admin backend bisa **mengubah tampilan UI** hanya dengan mengubah JSON di endpoint terkait.
-   - Perubahan UI langsung diterapkan di frontend tanpa perlu deployment ulang.
-
-
-## 📂 Struktur Projek
-
-### Backend (NestJS)
-```
-backend/
-|── dist  --> folder untuk hasil build aplikasi
-├── src/ --> folder source aplikasi
-│   ├── app.module.ts --> file module utama aplikasi
-│   ├── main.ts  --> file entry utama aplikasi
-│   ├── modules/ --> folder untuk menyimpan module aplikasi
-│   │   ├── services/ --> folder untuk menyimpan service yang ada pada aplikasi
-│   │   │   ├── auth.module.ts --> file module service aplikasi
-│   │   │   ├── auth.controller.ts --> file module auth controller
-│   │   │   ├── auth.service.ts --> file service aplikasi
-│   │   │   ├── user.repository.ts --> file repository aplikasi
-│   │   ├── ui/ --> folder untuk module ui controller
-│   │   │   ├── app.ui.controller.ts  --> file controller untuk server driven UI
-│   │   ├── user/ --> folder user entity
-│   │   │   ├── userp.entity.ts --> file entity user untuk ORM
-├── package.json --> file list package module untuk membangun dan instalasi aplikasi
-```
----
-
-## 🧭 Arsitektur Backend
-
-```
-[Frontend]  ── GET /ui/home ───────────────▶ [UIController]
-            ── POST /auth/register ─────▶ [AuthService → DB]
-            ── POST /auth/login ───────▶ [AuthService → DB]
-            ── GET /auth/profile ──────▶ [AuthGuard → DB]
-                                           ↓
-                                        Supabase
-```
-
-Penjelasan:
-- Setiap endpoint `/ui/...` mengembalikan struktur UI JSON untuk ditampilkan frontend.
-- Endpoint `/auth/...` menangani login dan registrasi, serta profile check berdasarkan token.
-- Semua operasi database dilakukan melalui TypeORM ke Supabase.
-- Backend bertindak sebagai pengontrol penuh UI dan autentikasi.
+* **Dynamic UI Control:** The server dictates the UI structure, allowing instantaneous frontend changes by updating JSON files/database records on the backend.
+* **Decoupled Architecture:** Separates business logic (in NestJS services) from presentation logic (in UI JSON), simplifying maintenance and updates.
+* **JWT Authentication:** Secure user registration, login, and profile access using JSON Web Tokens.
+* **API-First Design:** Provides dedicated endpoints for both UI components (`/ui/*`) and user management (`/auth/*`).
 
 ---
 
-## 🚀 Cara menjalankan
+## 🛠️ Technology Stack
 
-### 1️⃣ Backend (NestJS)
-#### Install dependencies:
-```sh
-cd backend
-npm install
-```
+| Category | Technology | Purpose |
+| :--- | :--- | :--- |
+| **Framework** | **NestJS** | High-performance, TypeScript-based Node.js backend. |
+| **Authentication** | **JWT (JSON Web Token)** | Secure, state-less authentication mechanism. |
+| **Database ORM** | **TypeORM** | TypeScript ORM for interacting with the database. |
+| **Database** | **SQLite / PostgreSQL (Supabase)** | Data persistence for user profiles and UI configuration. |
 
-#### Jalankan server backend:
-```sh
-npm run start:dev
-```
+---
 
 ## 🔗 API Routes
-| Method | Endpoint          | Description              |
-|--------|------------------|--------------------------|
-| GET    | /auth/profile    | Get user profile         |
-| POST   | /auth/login      | Login user               |
-| POST   | /auth/register   | Register new user        |
-| GET    | /ui/home         | Get home UI components   |
-| GET    | /ui/auth         | Get auth UI components   |
-| GET    | /ui/register     | Get register UI components   |
+
+The backend exposes the following primary endpoints:
+
+| Category | Method | Endpoint | Description | Requires Auth |
+| :--- | :--- | :--- | :--- | :--- |
+| **Authentication** | `POST` | `/auth/register` | Create a new user account. | No |
+| **Authentication** | `POST` | `/auth/login` | Log in and receive a JWT. | No |
+| **Authentication** | `GET` | `/auth/profile` | Retrieve the authenticated user's profile. | **Yes** |
+| **UI Components** | `GET` | `/ui/home` | Get JSON structure for the Home screen. | No |
+| **UI Components** | `GET` | `/ui/auth` | Get JSON structure for the Login screen. | No |
+| **UI Components** | `GET` | `/ui/register` | Get JSON structure for the Registration screen. | No |
 
 ---
 
-## 📜 Lisensi
+## ⚙️ Local Setup and Running
+
+### Prerequisites
+
+* Node.js (v18+)
+* npm
+
+### Steps
+
+1.  **Clone the repository:**
+    ```sh
+    git clone [Your Repository URL]
+    cd backend
+    ```
+
+2.  **Install dependencies:**
+    ```sh
+    npm install
+    ```
+
+3.  **Configure Environment Variables:**
+    Create a `.env` file in the root of the `backend` directory to configure your database connection and JWT secret.
+
+4.  **Run the development server:**
+    ```sh
+    npm run start:dev
+    ```
+    The server should now be running, typically at `http://localhost:3000`.
+
+---
+
+## 💡 How SDUI Works Here
+
+1.  **Frontend Request:** The mobile/web frontend makes a `GET` request to, say, `/ui/home`.
+2.  **Backend Response (JSON):** The NestJS controller constructs and returns a JSON object. This object defines the UI components (e.g., `{"type": "header", "text": "Welcome Back!"}`).
+3.  **Frontend Rendering:** The frontend iterates through the JSON and uses its native/web renderers for each component `type` (header, button, card, etc.) to display the interface.
+
+This allows developers to change the order, type, and properties of UI elements **without deploying a new frontend build**.
+
+---
+
+## 📜 License
+
 This project is licensed under the MIT License.
